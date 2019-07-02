@@ -17,11 +17,13 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "generate-ui": "",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "precommit": "pretty-quick --staged"
+  },
+  "bin": {
+    "generate-ui": "bin/generate-ui.js"
   },
   "browserslist": [
     ">0.2%",
