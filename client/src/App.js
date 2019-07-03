@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import getWeb3, { getGanacheWeb3 } from './utils/getWeb3';
 import Web3Info from './components/Web3Info/index.js';
 import { Loader } from 'rimble-ui';
+import Mynft from './components/contracts/MyNFT';
 
 import styles from './App.module.scss';
 
@@ -64,17 +65,7 @@ class App extends Component {
   }
 
   render() {
-    if (!this.state.web3) {
-      return this.renderLoader();
-    }
-    return (
-      <div className={styles.App}>
-        <h1>Good to Go!</h1>
-        <p>Zepkit has created your app.</p>
-        <h2>See your web3 info below:</h2>
-        <Web3Info {...this.state} />
-      </div>
-    );
+    return <Mynft />
   }
 }
 

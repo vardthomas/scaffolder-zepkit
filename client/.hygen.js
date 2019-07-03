@@ -17,7 +17,8 @@ fs.readdir(contractBuildDir, function(err, items) {
 
 module.exports = {
     helpers: {
-        fs: fs,
-        contracts: contracts
+        contracts: contracts,
+        renderMarkup: require('react-dom/server').renderToStaticMarkup,
+        ZepScaffolder: require('zep-scaffolder'),
     }
 }
