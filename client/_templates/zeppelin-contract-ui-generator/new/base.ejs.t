@@ -2,11 +2,14 @@
 to: src/components/contracts/<%=name%>.js
 ---
 <%
- Message = message.toUpperCase()
+console.log(h.contracts[name].abi);
 %>
 
 class <%= Name %> {
     work(){
-        return "<%= Message %>"
+        return ""
     }
 }
+
+<%
+%>
