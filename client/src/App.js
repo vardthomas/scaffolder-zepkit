@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import getWeb3, { getGanacheWeb3 } from './utils/getWeb3';
 import Web3Info from './components/Web3Info/index.js';
 import { Loader } from 'rimble-ui';
-import Mynft from './components/contracts/MyNFT';
+import List from './components/List.js';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { generateRoutesForFunctions } from 'zep-scaffolder'
 
 import styles from './App.module.scss';
+import FunctionDetail from './components/FunctionDetail.js';
 
 class App extends Component {
   state = {
@@ -65,7 +68,11 @@ class App extends Component {
   }
 
   render() {
-    return <Mynft />
+    return (
+      <Router>
+        <Route path="/contract/:contractName/:selectedFunc?" component={List} />
+      </Router>
+    )
   }
 }
 
