@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './MasterDetail.module.scss';
 import FunctionDetail from './FunctionDetail'
 import SideNav from './SideNav'
-
+import NetworkIndicator from '@rimble/network-indicator'
 
 export default class MasterDetail extends React.Component {
   constructor(props) {
@@ -73,6 +73,15 @@ export default class MasterDetail extends React.Component {
 
     return (
       <div>
+        <div className={styles.networkIndicator}>
+          <NetworkIndicator currentNetwork={null} requiredNetwork={1}>
+          {{
+            onNetworkMessage: "Connected to correct network",
+            noNetworkMessage: "Not connected to anything",
+            onWrongNetworkMessage: "Wrong network"
+          }}
+        </NetworkIndicator>
+        </div>
         <div className={styles.sideNav}>
           {masterView}
         </div >

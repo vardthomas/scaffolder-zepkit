@@ -34,6 +34,15 @@
     overflow: auto;
     padding: 8px;
   }
+}
 
+.invokeContainer {
+  max-width: 640px;
+  position: relative;
+}
 
+.submitContainer{
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
