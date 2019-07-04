@@ -13,6 +13,10 @@ export const getAbi = () => {
     return <%- JSON.stringify(h.contracts[name].abi) %>
 }
 
+export const getDevDoc = () => {
+    return <%- JSON.stringify(h.contracts[name].devdoc) %>
+}
+
 export default class <%= h.contracts[name].contractName %> extends Component {
 
 <% 
