@@ -11,7 +11,7 @@ export default class FunctionDetail extends React.Component {
                 </div>
                 <div className={styles.sectionContainer}>
                     <div className={styles.sectionLabel}>
-                        Signature
+                        Signature:
                     </div>
                     <div className={styles.sectionContent}>
                         {this.props.item.signature}
@@ -19,7 +19,7 @@ export default class FunctionDetail extends React.Component {
                 </div>
                 <div className={styles.sectionContainer}>
                     <div className={styles.sectionLabel}>
-                        Dev Docs
+                        Dev Docs:
                     </div>
                     <div className={styles.sectionContent}>
                         {this.props.item.methodInfo.details}
@@ -27,10 +27,10 @@ export default class FunctionDetail extends React.Component {
                 </div>
                 <div className={styles.sectionContainer}>
                     <div className={styles.sectionLabel}>
-                        Invoke
+                        Invoke:
                     </div>
                     <div className={styles.sectionContent}>
-                        Approves another address to transfer the given token ID The zero address indicates there is no approved address. There can only be one approved address per token at a given time. Can only be called by the token owner or an approved operator.
+                        TODO:
                     </div>
                 </div>
             </div>

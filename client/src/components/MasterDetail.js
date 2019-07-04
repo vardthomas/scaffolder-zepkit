@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styles from './MasterDetail.module.scss';
-
 import FunctionDetail from './FunctionDetail'
 import SideNav from './SideNav'
 
@@ -47,15 +45,7 @@ export default class MasterDetail extends React.Component {
   getMasterView() {
     const selectedItem = this.getSelectedItem()
     return (
-      <div className={styles.test}>
-        <ul>
-          {this.state.list.map(item => (
-            <li key={item.key} className={item.definition.name === selectedItem.selectedFunc ? styles.active : styles.item}>
-              <Link to={`/contract/${item.contractName}/${item.definition.name}`}>{item.definition.name}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <SideNav list={this.state.list} selectedItem={selectedItem}/>
     );
   }
 
