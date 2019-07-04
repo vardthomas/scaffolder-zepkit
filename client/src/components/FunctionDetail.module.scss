@@ -1,18 +1,39 @@
+.nobr { white-space: nowrap }
 
-.sectionContainer{
+.sectionContainer {
   padding: 5px;
-  margin-bottom: 5px;
+  margin-bottom: px;
 }
 
-.sectionLabel{
-  padding: 10px 0 0 0 ;
-  width:  150px;
+.sectionLabel {
+  padding: 10px 0 0 0;
+  width: 150px;
   height: 50px;
   float: left;
-  clear:both;
+  clear: both;
 }
 
-.sectionContent{
+.sectionContent {
   overflow: auto;
   padding: 10px;
+  max-width: 640px;
+}
+
+@media only screen and (max-width: 768px) {
+  .sectionContainer {
+    padding: 2px;
+    margin-bottom: 2px;
+    min-width: 360px;
+  }
+  .sectionLabel {
+    float: none;
+    height: 30px;
+
+  }
+  .sectionContent {
+    overflow: auto;
+    padding: 8px;
+  }
+
+
 }

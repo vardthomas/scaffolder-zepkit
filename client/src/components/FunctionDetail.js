@@ -6,7 +6,7 @@ export default class FunctionDetail extends React.Component {
     render() {
         return (
             <div>
-                <div>
+                <div className={styles.nobr}>
                     <h2>{this.props.item.definition.name}</h2>
                 </div>
                 <div className={styles.sectionContainer}>
