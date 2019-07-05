@@ -4,6 +4,16 @@ to: src/components/contracts/<%=name.toLowerCase()%>.js
 
 import React, { Component } from 'react';
 
+const _networkLookup = <% if(h.contracts[name].contractName in h.networkAddresses) { %> <%- JSON.stringify(h.networkAddresses[h.contracts[name].contractName]) %> <% } else { %> {} <% } %>
+
+export const getAddress = (networkId) => {
+
+    if(networkId in _networkLookup){
+      return _networkLookup[networkId]
+    }
+
+    return null
+}
 
 export const getContractName = () => {
     return "<%- h.contracts[name].contractName %>"

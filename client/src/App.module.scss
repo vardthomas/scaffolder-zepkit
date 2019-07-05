@@ -68,6 +68,13 @@ code {
   }
 }
 
+.networkIndicator{
+  position: absolute;
+  top:0;
+  right:0;
+  padding: 10px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

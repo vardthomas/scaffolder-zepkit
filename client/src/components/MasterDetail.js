@@ -2,20 +2,30 @@ import React from 'react';
 import styles from './MasterDetail.module.scss';
 import FunctionDetail from './FunctionDetail'
 import SideNav from './SideNav'
-import NetworkIndicator from '@rimble/network-indicator'
 
 export default class MasterDetail extends React.Component {
-  constructor(props) {
+
+  constructor(props){
     super(props);
 
-    const { contractName } = props.match.params;
-    const { selectedFunc } = props.match.params;
+    this.state = {
+      isLoading : true
+    }
+  }
+
+  componentDidMount = async () => {
+
+    const { contractName } = this.props.match.params;
+    const { selectedFunc } = this.props.match.params;
 
     const contract = require('./contracts/' + contractName.toLowerCase()) // TODO - Check security of this call
     const formattedContractName = contract.getContractName()
 
+    const networkId = await this.props.web3.eth.net.getId()
     const contractAbi = contract.getAbi()
     const contractDevDoc = contract.getDevDoc().methods
+    const contractAddress = contract.getAddress(networkId);
+
 
     // TODO - This is nonoptimal and could probably be moved to the contract component generation step.
     const functions = []
@@ -36,18 +46,26 @@ export default class MasterDetail extends React.Component {
       }
     })
 
-    this.state = {
+    this.setState({
+      isLoading : false,
       contractName: formattedContractName,
+      contractAddress,
       contractAbi: contractAbi,
       list: functions,
       selectedFunc: selectedFunc
-    };
+    })
   }
 
   getMasterView() {
     const selectedItem = this.getSelectedItem()
+    const {contractName, contractAddress} = this.state
     return (
-      <SideNav list={this.state.list} selectedItem={selectedItem} contractName={this.state.contractName}/>
+      <SideNav 
+      list={this.state.list} 
+      selectedItem={selectedItem} 
+      contractName={contractName} 
+      contractAddress={contractAddress} 
+      />
     );
   }
 
@@ -70,20 +88,16 @@ export default class MasterDetail extends React.Component {
   }
 
   render() {
+
+    if(this.state.isLoading){
+      return null
+    }
+
     const masterView = this.getMasterView();
     const detailView = this.getDetailView();
 
     return (
       <div>
-        <div className={styles.networkIndicator}>
-          <NetworkIndicator currentNetwork={null} requiredNetwork={1}>
-          {{
-            onNetworkMessage: "Connected to correct network",
-            noNetworkMessage: "Not connected to anything",
-            onWrongNetworkMessage: "Wrong network"
-          }}
-        </NetworkIndicator>
-        </div>
         <div className={styles.sideNav}>
           {masterView}
         </div >

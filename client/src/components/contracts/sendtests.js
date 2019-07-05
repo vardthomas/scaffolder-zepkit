@@ -1,6 +1,16 @@
 
 import React, { Component } from 'react';
 
+const _networkLookup =  {"5777":"0x5929A29e973E94468510DAd1cd545fA139C20aa6"} 
+
+export const getAddress = (networkId) => {
+
+    if(networkId in _networkLookup){
+      return _networkLookup[networkId]
+    }
+
+    return null
+}
 
 export const getContractName = () => {
     return "SendTests"

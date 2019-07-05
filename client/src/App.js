@@ -4,6 +4,7 @@ import Web3Info from './components/Web3Info/index.js';
 import { Loader } from 'rimble-ui';
 import MasterDetail from './components/MasterDetail';
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import NetworkIndicator from '@rimble/network-indicator'
 import styles from './App.module.scss';
 
 class App extends Component {
@@ -31,9 +32,19 @@ class App extends Component {
       if (!isProd) {
         // Get network provider and web3 instance.
         const web3 = await getWeb3();
+
+        await web3.eth.net.getNetworkType((err, network)=> {
+          if(network !== "private"){
+            throw "wrong network: only use on private test nets!"
+          }
+          return network
+        }); 
+
         const ganacheAccounts = await this.getGanacheAddresses();
+
         // Use web3 to get the user's accounts.
         const accounts = await web3.eth.getAccounts();
+
         // Get the contract instance.
         const networkId = await web3.eth.net.getId();
         const isMetaMask = web3.currentProvider.isMetaMask;
@@ -43,7 +54,7 @@ class App extends Component {
       }
     } catch (error) {
       // Catch any errors for any of the above operations.
-      alert(`Failed to load web3, accounts, or contract. Check console for details.`);
+      alert(`Failed to initialize. Check console errors.`);
       console.error(error);
     }
   };
@@ -67,11 +78,24 @@ class App extends Component {
   render() {
     return (
       <div>
-         <Router>
-        <Route path="/contract/:contractName/:selectedFunc?" component={MasterDetail} />
-      </Router>
+        <div className={styles.networkIndicator}>
+          <NetworkIndicator currentNetwork={this.state.networkId} requiredNetwork={this.state.networkId}>
+            {{
+              onNetworkMessage: "Connected to correct network",
+              noNetworkMessage: "Not connected to anything",
+              onWrongNetworkMessage: "Wrong network"
+            }}
+          </NetworkIndicator>
+        </div>
+        {!this.state.web3 && this.renderLoader()}
+        {this.state.web3 && 
+                <Router>
+                <Route 
+                  path="/contract/:contractName/:selectedFunc?" 
+                  component={props => <MasterDetail {...props} web3={this.state.web3} />} /> 
+              </Router>
+        }
       </div>
-     
     )
   }
 }

@@ -21,6 +21,7 @@ export default class SideNav extends React.Component {
         return (
             <div>
                 <h3 className={styles.contractName}>{this.props.contractName}</h3>
+                <div>{this.props.contractAddress}</div>
 
                 <h4 className={styles.functionHeaders}>Reads()</h4>
                 <ul className={styles.functionList}>
