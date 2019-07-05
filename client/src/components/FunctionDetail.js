@@ -1,5 +1,8 @@
 import React from 'react';
 import AddressInput from './inputs/AddressInput';
+import StringInput from './inputs/StringInput';
+import BoolInput from './inputs/BoolInput';
+import ByteInput from './inputs/ByteInput';
 import IntInput from './inputs/IntInput';
 import OutputPill from './outputs/OutputPill';
 import { Button } from "rimble-ui";
@@ -13,18 +16,24 @@ export default class FunctionDetail extends React.Component {
     }
 
     getInputComponent(input){
-        console.log(styles)
-
         if(this.checkInt(input.type)){
-            return <IntInput label={input.name}/>
+            return <IntInput label={input.name} type={input.type}/>
         }
 
-        if(input.type == 'address'){
+        if(input.type === 'address'){
             return <AddressInput label={input.name}/>
         }
 
         if(input.type.startsWith('byte')){
-            return <AddressInput label={input.name}/>
+            return <ByteInput label={input.name}/>
+        }
+
+        if(input.type.startsWith('string')){
+            return <StringInput label={input.name}/>
+        }
+
+        if(input.type.startsWith('bool')){
+            return <BoolInput label={input.name}/>
         }
     }
 
@@ -46,24 +55,33 @@ export default class FunctionDetail extends React.Component {
                         {this.props.item.signature}
                     </div>
                 </div>
-                <div className={styles.sectionContainer}>
-                    <div className={styles.sectionLabel}>
-                        Returns:
+                {
+                    this.props.item.definition.outputs.length > 0 ?
+                        <div className={styles.sectionContainer}>
+                        <div className={styles.sectionLabel}>
+                            Returns:
+                        </div>
+                        <div className={styles.sectionContent}>
+                        {this.props.item.definition.outputs.map((item) =>
+                            this.getOutputComponent(item)
+                        )}
+                        </div>
                     </div>
-                    <div className={styles.sectionContent}>
-                    {this.props.item.definition.outputs.map((item) =>
-                        this.getOutputComponent(item)
-                    )}
-                    </div>
-                </div>
-                <div className={styles.sectionContainer}>
-                    <div className={styles.sectionLabel}>
-                        Dev Docs:
-                    </div>
-                    <div className={styles.sectionContent}>
-                        {this.props.item.methodInfo.details}
-                    </div>
-                </div>
+                    : null 
+                }
+                {
+                    this.props.item.methodInfo.details ?
+                    <div className={styles.sectionContainer}>
+                        <div className={styles.sectionLabel}>
+                            Dev Docs:
+                        </div>
+                        <div className={styles.sectionContent}>
+                            {this.props.item.methodInfo.details}
+                        </div>
+                    </div> 
+                    : null 
+                }
+                
                 <div className={`${styles.sectionContainer} ${styles.invokeContainer}`}>
                     <div className={styles.sectionLabel}>
                         Invoke:

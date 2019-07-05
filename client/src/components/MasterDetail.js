@@ -17,9 +17,10 @@ export default class MasterDetail extends React.Component {
     const contractAbi = contract.getAbi()
     const contractDevDoc = contract.getDevDoc().methods
 
+    // TODO - This is nonoptimal and could probably be moved to the contract component generation step.
     const functions = []
     contractAbi.forEach(function (item) {
-      if (item.name && item.stateMutability === "view") {
+      if (item.name && item.type === "function") {
         var inputs = []
         item.inputs.forEach(function (input) {
           inputs.push(input.type)
