@@ -1,6 +1,5 @@
 import React from 'react';
-import { Input } from 'rimble-ui';
-import { Field } from 'rimble-ui';
+import { Input, Field } from 'rimble-ui';
 import styles from './Input.module.scss'
 
 export default class AddressInput extends React.Component {
