@@ -8,15 +8,16 @@ export default class MasterDetail extends React.Component {
   constructor(props) {
     super(props);
 
-    var { contractName } = props.match.params;
-    var { selectedFunc } = props.match.params;
+    const { contractName } = props.match.params;
+    const { selectedFunc } = props.match.params;
 
-    var contract = require('./contracts/' + contractName.toLowerCase().replace("../", ""))
-    contractName = contract.getContractName()
-    var contractAbi = contract.getAbi()
-    var contractDevDoc = contract.getDevDoc().methods
+    const contract = require('./contracts/' + contractName.toLowerCase()) // TODO - Check security of this call
+    const formattedContractName = contract.getContractName()
 
-    var functions = []
+    const contractAbi = contract.getAbi()
+    const contractDevDoc = contract.getDevDoc().methods
+
+    const functions = []
     contractAbi.forEach(function (item) {
       if (item.name && item.stateMutability === "view") {
         var inputs = []
@@ -30,12 +31,12 @@ export default class MasterDetail extends React.Component {
           methodInfo = contractDevDoc[signature]
         }
 
-        functions.push({ key: signature, signature: signature, contractName: contractName, definition: item , methodInfo: methodInfo})
+        functions.push({ key: signature, signature: signature, contractName: formattedContractName, definition: item , methodInfo: methodInfo})
       }
     })
 
     this.state = {
-      contractName: contractName,
+      contractName: formattedContractName,
       contractAbi: contractAbi,
       list: functions,
       selectedFunc: selectedFunc
@@ -45,7 +46,7 @@ export default class MasterDetail extends React.Component {
   getMasterView() {
     const selectedItem = this.getSelectedItem()
     return (
-      <SideNav list={this.state.list} selectedItem={selectedItem}/>
+      <SideNav list={this.state.list} selectedItem={selectedItem} contractName={this.state.contractName}/>
     );
   }
 
@@ -61,8 +62,8 @@ export default class MasterDetail extends React.Component {
   }
 
   getSelectedItem() {
-    var { contractName } = this.props.match.params;
-    var { selectedFunc } = this.props.match.params;
+    const { contractName } = this.props.match.params;
+    const { selectedFunc } = this.props.match.params;
 
     return this.state.list.find(item => item.contractName === contractName && item.definition.name === selectedFunc) || {};
   }
