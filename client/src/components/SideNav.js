@@ -9,7 +9,7 @@ export default class SideNav extends React.Component {
         const reads = []
         const sends = []
 
-        this.props.list.map(item => {
+        this.props.list.forEach(item => {
             if (item.definition.constant === true){
                 reads.push(item)
             }
@@ -21,15 +21,16 @@ export default class SideNav extends React.Component {
         return (
             <div>
                 <h3 className={styles.contractName}>{this.props.contractName}</h3>
-                <div>{this.props.contractAddress}</div>
+                <div className={styles.contractAddress}><input type="text" defaultValue={this.props.contractAddress || "not deployed"}/></div>
+
 
                 <h4 className={styles.functionHeaders}>Reads()</h4>
                 <ul className={styles.functionList}>
-                    {reads.map(item => (
-                        <li key={item.key} className={item.key === this.props.selectedItem. key ? styles.active : styles.item}>
-                            <Link to={`/contract/${item.contractName}/${item.definition.name}`}>{item.definition.name}</Link>
+                    {reads.map(item => 
+                        <li key={item.key} className={item.key === this.props.selectedItem.key ? styles.active : styles.item}>
+                        <Link to={`/contract/${item.contractName}/${item.definition.name}`}>{item.definition.name}</Link>
                         </li>
-                    ))}
+                    )}
                 </ul>
 
                 <h4 className={styles.functionHeaders}>Writes()</h4>

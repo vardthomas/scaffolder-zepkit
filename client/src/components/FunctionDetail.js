@@ -6,39 +6,101 @@ import ByteInput from './inputs/ByteInput';
 import IntInput from './inputs/IntInput';
 import OutputPill from './outputs/OutputPill';
 import { Button } from "rimble-ui";
-
 import styles from './FunctionDetail.module.scss';
 
 export default class FunctionDetail extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.signAndSend = this.signAndSend.bind(this);
+        this.inputComponents = []
+
+        if(this.props.contractAddress){
+            this.contract = new this.props.web3.eth.Contract(this.props.contractAbi, this.props.contractAddress)
+        }
+      }
+
+    componentDidUpdate(){
+        this.inputComponents = []
+    }
+
+    callRead = async () => {        
+        try{
+            const {name} = this.props.item.definition
+
+            if(this.contract ){
+                let result = await this.contract.methods[name]().call( { from : this.props.accounts[0] } );
+                console.log(result)
+                window.toastProvider.addMessage("Success! View console.", {
+                    variant: "success"
+                  })
+            }
+        }
+        catch (err) {
+            console.error(err)
+        }
+    }
+
+    callWrite = async () =>{
+        try {
+            const {name} = this.props.item.definition
+
+            if(this.contract ){
+                let result = await this.contract.methods[name]("Hello").send( { from : this.props.accounts[0] } );
+                console.log(result)
+                window.toastProvider.addMessage("Success! View console.", {
+                    variant: "success"
+                    })
+            }
+        }
+        catch (err) {
+            console.error(err)
+        }
+    }
+
+    signAndSend = async () =>{
+        if(this.props.item.definition.constant){
+            await this.callRead()
+        }
+        else{
+            await this.callWrite()
+        }
+    }
 
     checkInt(type){
         return type.startsWith('int') || type.startsWith('uint')
     }
 
     getInputComponent(input){
+        let component = null
+
         if(this.checkInt(input.type)){
-            return <IntInput label={input.name} type={input.type}/>
+            component = <IntInput label={input.name} type={input.type}/>
+        } 
+        else if (input.type === 'address'){
+            component = <AddressInput label={input.name}/>
+        }
+        else if (input.type.startsWith('byte')){
+            component = <ByteInput label={input.name}/>
+        }
+        else if (input.type.startsWith('string')){
+            component = <StringInput label={input.name}/>
+        } 
+        else if (input.type.startsWith('bool')){
+            component = <BoolInput label={input.name}/>
+        }
+        else {
+            alert('argument not supported yet')
+            throw  new Error('argument not supported yet')
         }
 
-        if(input.type === 'address'){
-            return <AddressInput label={input.name}/>
-        }
+        this.inputComponents.push(component);
 
-        if(input.type.startsWith('byte')){
-            return <ByteInput label={input.name}/>
-        }
-
-        if(input.type.startsWith('string')){
-            return <StringInput label={input.name}/>
-        }
-
-        if(input.type.startsWith('bool')){
-            return <BoolInput label={input.name}/>
-        }
+        return component
     }
 
-    getOutputComponent(output){
-        return <OutputPill label={output.type} />
+    getOutputComponent(output, index){
+        return <OutputPill key={index} label={output.type} />
     }
 
     render() {
@@ -62,8 +124,8 @@ export default class FunctionDetail extends React.Component {
                             Returns:
                         </div>
                         <div className={styles.sectionContent}>
-                        {this.props.item.definition.outputs.map((item) =>
-                            this.getOutputComponent(item)
+                        {this.props.item.definition.outputs.map((item, index) =>
+                            this.getOutputComponent(item, index)
                         )}
                         </div>
                     </div>
@@ -91,7 +153,7 @@ export default class FunctionDetail extends React.Component {
                         this.getInputComponent(item)
                     )}
                     <div className={this.props.item.definition.inputs.length > 0 ? styles.submitContainer : ""}>
-                        <Button height={'2rem'} px={'2'}>Sign & Send</Button>
+                        <Button height={'2rem'} px={'2'} onClick={this.signAndSend} >Sign & Send</Button>
                     </div>
                     </div>
                 </div>

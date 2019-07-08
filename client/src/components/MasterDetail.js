@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './MasterDetail.module.scss';
 import FunctionDetail from './FunctionDetail'
 import SideNav from './SideNav'
+import {ToastMessage} from 'rimble-ui'
 
 export default class MasterDetail extends React.Component {
 
@@ -64,19 +65,21 @@ export default class MasterDetail extends React.Component {
       list={this.state.list} 
       selectedItem={selectedItem} 
       contractName={contractName} 
-      contractAddress={contractAddress} 
+      contractAddress={contractAddress}
       />
     );
   }
 
   getDetailView() {
     const selectedItem = this.getSelectedItem()
+    const { contractAddress, contractAbi} = this.state
+    const { web3, accounts} = this.props
 
     if (Object.keys(selectedItem).length === 0) {
       return <div>No Selection</div>
     }
     return (<div styles={this.state} className={styles.detail}>
-      <FunctionDetail item={selectedItem} />
+      <FunctionDetail item={selectedItem} contractAddress={contractAddress} contractAbi={contractAbi} web3={web3} accounts={accounts} toastProvider={this.toastProvider}/>
     </div>);
   }
 
@@ -103,6 +106,7 @@ export default class MasterDetail extends React.Component {
         </div >
         <div className={styles.contentContainer}>
           {detailView}
+          <ToastMessage.Provider ref={node => (window.toastProvider = node)} />
         </div>
       </div>
     )

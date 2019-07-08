@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import getWeb3, { getGanacheWeb3 } from './utils/getWeb3';
-import Web3Info from './components/Web3Info/index.js';
 import { Loader } from 'rimble-ui';
 import MasterDetail from './components/MasterDetail';
 import { BrowserRouter as Router, Route } from "react-router-dom";
@@ -35,7 +34,7 @@ class App extends Component {
 
         await web3.eth.net.getNetworkType((err, network)=> {
           if(network !== "private"){
-            throw "wrong network: only use on private test nets!"
+            throw new Error("wrong network: only use on private test nets!")
           }
           return network
         }); 
@@ -50,7 +49,7 @@ class App extends Component {
         const isMetaMask = web3.currentProvider.isMetaMask;
         let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]) : web3.utils.toWei('0');
         balance = web3.utils.fromWei(balance, 'ether');
-        this.setState({ web3, ganacheAccounts, accounts, balance, networkId, isMetaMask });
+        this.setState({ web3, ganacheAccounts, accounts, balance, networkId, isMetaMask});
       }
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -76,6 +75,8 @@ class App extends Component {
   }
 
   render() {
+
+    const {web3, accounts} = this.state
     return (
       <div>
         <div className={styles.networkIndicator}>
@@ -92,7 +93,7 @@ class App extends Component {
                 <Router>
                 <Route 
                   path="/contract/:contractName/:selectedFunc?" 
-                  component={props => <MasterDetail {...props} web3={this.state.web3} />} /> 
+                  component={props => <MasterDetail {...props} web3={web3} accounts={accounts} />} /> 
               </Router>
         }
       </div>
