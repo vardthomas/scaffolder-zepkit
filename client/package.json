@@ -20,7 +20,7 @@
     "rimble-ui": "^0.7.1",
     "styled-components": "^4.3.2",
     "web3": "1.0.0-beta.37",
-    "zep-scaffolder": "file:../../zep-scaffolder"
+    "zep-scaffolder": "github:vardthomas/zep-scaffolder"
   },
   "scripts": {
     "start": "react-app-rewired start",
