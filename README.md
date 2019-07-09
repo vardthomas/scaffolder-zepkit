@@ -10,7 +10,7 @@ Check out this repository and install all packages
 git clone https://github.com/vardthomas/scaffolder-zepkit.git
 
 cd scaffolder-zepkit
-npm-install
+npm install
 cd client
 npm install
 ```
