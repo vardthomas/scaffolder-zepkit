@@ -13,15 +13,46 @@ export default class FunctionDetail extends React.Component {
         super(props);
 
         this.signAndSend = this.signAndSend.bind(this);
-        this.inputComponents = []
+        this.handleInputChange = this.handleInputChange.bind(this);
 
         if(this.props.contractAddress){
             this.contract = new this.props.web3.eth.Contract(this.props.contractAbi, this.props.contractAddress)
         }
+
+        this.state={
+            params: {}
+        }
       }
 
-    componentDidUpdate(){
-        this.inputComponents = []
+      componentWillReceiveProps(nextProps) {
+        // You don't have to do this check first, but it can help prevent an unneeded render
+        if (nextProps.item !== this.props.item) {
+            this.setState(({
+                params: {}
+            }));
+        }
+      }
+
+    getDefaultValue(type){
+        if(type.startsWith('int') || type.startsWith('uint')){
+            return 0
+        } 
+        else if (type === 'address'){
+            return "0x0000000000000000000000000000000000000000"
+        }
+        else if (type.startsWith('byte')){
+            return []
+        }
+        else if (type.startsWith('string')){
+            return 0
+        } 
+        else if (type.startsWith('bool')){
+            return false
+        }
+        else {
+            alert('param type not supported yet')
+            throw  new Error('param type not supported yet')
+        }
     }
 
     callRead = async () => {        
@@ -41,12 +72,32 @@ export default class FunctionDetail extends React.Component {
         }
     }
 
+
     callWrite = async () =>{
         try {
             const {name} = this.props.item.definition
 
+            const sortedParams = [];
+            for (var key in this.state.params) {
+                sortedParams[sortedParams.length] = key;
+            }
+            sortedParams.sort();
+
+            let parameters = []
+
+            for (var i = 0; i < this.props.item.definition.inputs.length; i++){
+                if (i in this.state.params){
+                    parameters.unshift(this.state.params[i])
+                }
+                else{
+                    parameters.unshift(this.getDefaultValue(this.props.item.definition.inputs[i].type))
+                }
+            }
+
+            console.log(parameters)
+
             if(this.contract ){
-                let result = await this.contract.methods[name]("Hello").send( { from : this.props.accounts[0] } );
+                let result = await this.contract.methods[name](...parameters).send( { from : this.props.accounts[0] } );
                 console.log(result)
                 window.toastProvider.addMessage("Success! View console.", {
                     variant: "success"
@@ -67,36 +118,35 @@ export default class FunctionDetail extends React.Component {
         }
     }
 
-    checkInt(type){
-        return type.startsWith('int') || type.startsWith('uint')
+    handleInputChange(index, value) {
+        let params = Object.assign({}, this.state.params)
+        params[index] = value
+
+        this.setState(({
+            params: params
+        }));
     }
 
-    getInputComponent(input){
-        let component = null
-
-        if(this.checkInt(input.type)){
-            component = <IntInput label={input.name} type={input.type}/>
+    getInputComponent(input, index){
+        if(input.type.startsWith('int') || input.type.startsWith('uint')){
+            return <IntInput key={index} label={input.name} type={input.type} index={index}  handleInputChange={this.handleInputChange}/>
         } 
         else if (input.type === 'address'){
-            component = <AddressInput label={input.name}/>
+            return <AddressInput key={index} label={input.name} index={index} handleInputChange={this.handleInputChange}/>
         }
         else if (input.type.startsWith('byte')){
-            component = <ByteInput label={input.name}/>
+            return <ByteInput key={index} label={input.name} index={index} handleInputChange={this.handleInputChange}/>
         }
         else if (input.type.startsWith('string')){
-            component = <StringInput label={input.name}/>
+            return <StringInput key={index} label={input.name} index={index} handleInputChange={this.handleInputChange}/>
         } 
         else if (input.type.startsWith('bool')){
-            component = <BoolInput label={input.name}/>
+            return <BoolInput key={index} label={input.name} index={index} handleInputChange={this.handleInputChange}/>
         }
         else {
             alert('argument not supported yet')
             throw  new Error('argument not supported yet')
         }
-
-        this.inputComponents.push(component);
-
-        return component
     }
 
     getOutputComponent(output, index){
@@ -149,9 +199,12 @@ export default class FunctionDetail extends React.Component {
                         Invoke:
                     </div>
                     <div className={styles.sectionContent}>
-                    {this.props.item.definition.inputs.map((item) =>
-                        this.getInputComponent(item)
-                    )}
+                    <form onSubmit={this.handleSearchTermSubmit}>
+                        {this.props.item.definition.inputs.map((item, index) =>
+                            this.getInputComponent(item, index)
+                        )}
+                    </form>
+
                     <div className={this.props.item.definition.inputs.length > 0 ? styles.submitContainer : ""}>
                         <Button height={'2rem'} px={'2'} onClick={this.signAndSend} >Sign & Send</Button>
                     </div>

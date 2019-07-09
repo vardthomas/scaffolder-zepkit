@@ -62,10 +62,10 @@ export default class MasterDetail extends React.Component {
     const {contractName, contractAddress} = this.state
     return (
       <SideNav 
-      list={this.state.list} 
-      selectedItem={selectedItem} 
-      contractName={contractName} 
-      contractAddress={contractAddress}
+        list={this.state.list} 
+        selectedItem={selectedItem} 
+        contractName={contractName} 
+        contractAddress={contractAddress}
       />
     );
   }
